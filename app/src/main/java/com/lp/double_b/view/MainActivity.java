@@ -1,12 +1,22 @@
-package com.lp.double_b;
+package com.lp.double_b.view;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.lp.double_b.R;
+import com.lp.double_b.view.adapter.BookFragmentAdapter;
+import com.lp.double_b.view.fragment.BookCityFragment;
+import com.lp.double_b.view.fragment.BookRackFragment;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
@@ -15,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTvBookCity;
     private TextView mTvBookRack;
     private ViewPager mVpContent;
+    private ArrayList<Fragment> mFragments;
+    private BookFragmentAdapter mFragmentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +36,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initView();
         initListener();
+        initData();
+    }
+
+    private void initData() {
+
+        mFragments = new ArrayList<Fragment>();
+        mFragments.add(new BookCityFragment());
+        mFragments.add(new BookRackFragment());
+        mFragmentAdapter = new BookFragmentAdapter(getSupportFragmentManager(),mFragments);
+        mVpContent.setAdapter(mFragmentAdapter);
     }
 
     private void initListener() {
@@ -46,26 +68,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_mine:
+            case R.id.iv_mine: //点击“我的"
                 break;
-            case R.id.tv_recommend:
+            case R.id.tv_recommend://点击“推荐”
                 break;
             case R.id.tv_book_city:
+                mVpContent.setCurrentItem(0);
+                setBookTitleColor(true);
                 break;
             case R.id.tv_book_rack:
+                mVpContent.setCurrentItem(1);
+                setBookTitleColor(false);
                 break;
         }
     }
 
+    private void setBookTitleColor(boolean isBookCitySelected) {
+        mTvBookCity.setTextColor(isBookCitySelected ? Color.RED : Color.GRAY);
+        mTvBookRack.setTextColor(isBookCitySelected ? Color.GRAY : Color.RED);
+    }
+
+    /**
+     * 页面滑动时调用
+     * @param position 页面位置是哪一页
+     * @param positionOffset 滑动了多少距离
+     * @param positionOffsetPixels 滑动了多少距离（转换成了px）
+     */
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+        Log.d("onPageScrolled: ","positio = " + position + "");
     }
 
+    /**
+     * 页面选中时调用此方法
+     * @param position 当前页面的位置
+     */
     @Override
     public void onPageSelected(int position) {
-
+        if (0 == position) {
+            setBookTitleColor(true);
+        } else {
+            setBookTitleColor(false);
+        }
     }
+
 
     @Override
     public void onPageScrollStateChanged(int state) {
