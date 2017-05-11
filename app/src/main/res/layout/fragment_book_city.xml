@@ -6,8 +6,11 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:textColor="@android:color/holo_blue_bright"
+        android:textSize="26dp"
+        android:text="这是书城页面"/>
 
 </FrameLayout>
