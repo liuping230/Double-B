@@ -3,4 +3,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Search_1">书名 \ 作者 \ 关键字</string>
+    <string name="Search_2">请输入书名 \ 作者 \ 关键字</string>
 </resources>
