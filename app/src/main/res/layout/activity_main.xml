@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".view.activity.MainActivity">
 
     <RelativeLayout
         android:id="@+id/rl_title_layout"
@@ -40,7 +40,6 @@
 
         </RelativeLayout>
 
-
         <ImageView
             android:id="@+id/iv_mine"
             android:layout_width="30dp"
@@ -49,12 +48,20 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:src="@drawable/new_menu_mine"/>
+        <ImageView
+            android:id="@+id/add_book"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/add_book"
+            android:visibility="invisible"/>
     </RelativeLayout>
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_title_layout">
-
     </android.support.v4.view.ViewPager>
 </RelativeLayout>
