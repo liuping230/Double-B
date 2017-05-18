@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+<!--搜索界面和书城界面的listView-->
+    <RelativeLayout
+        android:id="@+id/book_list"
+        android:layout_width="match_parent"
+        android:layout_height="90dp">
+     <ImageView
+        android:id="@+id/cover"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:padding="4dp"
+        android:src="@drawable/cover" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/cover"
+            android:orientation="vertical" >
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:la="5dp"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:text="书名" />
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="作者" />
+
+        <TextView
+            android:id="@+id/intro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:maxLines="3"
+            android:text="分类" />
+    </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
