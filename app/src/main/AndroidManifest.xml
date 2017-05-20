@@ -19,6 +19,8 @@
             android:name=".view.activity.SearchActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity android:name=".view.activity.BookDetailActivity">
+        </activity>
     </application>
 
 </manifest>

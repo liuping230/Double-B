@@ -23,7 +23,7 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:la="5dp"
+            android:layout_marginTop="5dp"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:text="书名" />
@@ -36,12 +36,12 @@
             android:text="作者" />
 
         <TextView
-            android:id="@+id/intro"
+            android:id="@+id/keywords"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:maxLines="3"
-            android:text="分类" />
+            android:text="关键词" />
     </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>

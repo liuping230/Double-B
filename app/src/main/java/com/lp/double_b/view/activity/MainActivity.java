@@ -1,5 +1,6 @@
 package com.lp.double_b.view.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -72,8 +73,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_mine: //点击“我的"
+
                 break;
             case R.id.add_book: //点击“添加书籍"
+                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
                 break;
             case R.id.tv_recommend://点击“推荐”
                 break;
