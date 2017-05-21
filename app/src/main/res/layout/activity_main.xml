@@ -29,6 +29,7 @@
                 android:id="@+id/tv_book_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_light"
                 android:text="书城"/>
             <TextView
                 android:id="@+id/tv_book_rack"

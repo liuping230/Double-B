@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lp.double_b.R;
-import com.lp.double_b.view.activity.BookDetailActivity;
-import com.lp.double_b.view.data.OneBook;
+import com.lp.double_b.view.data.BookInfoBean;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -20,10 +20,10 @@ import java.util.List;
 public class BookListAdapter extends BaseAdapter{
     private LayoutInflater mInflater;
 
-    public List<OneBook> _listData=null;
+    public List<BookInfoBean> _listData=null;
     private Context mContext;
 
-    public BookListAdapter (Context context,List<OneBook> list){
+    public BookListAdapter (Context context,List<BookInfoBean> list){
         _listData=list;
         mContext=context;
         mInflater=(LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -45,18 +45,14 @@ public class BookListAdapter extends BaseAdapter{
 //           convertView=view;
        }
         else{  holder = (Holder) convertView.getTag();}
-        final OneBook book=_listData.get(position);
+        final BookInfoBean book=_listData.get(position);
 //        将数据添加到自定义的布局中
-        holder.cover.setImageResource(R.drawable.cover);
-        holder.name.setText(book.getName());
+//        holder.cover.setImageResource(R.drawable.cover);
+        ImageLoader.getInstance().displayImage(book.getImage(),holder.cover);
+        holder.name.setText(book.getTitle());
         holder.author.setText(book.getAuthor());
-        holder.keyword.setText(book.getKeywords());
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BookDetailActivity.startActivity(mContext,book.getBookId());
-            }
-        });
+        holder.keyword.setText(book.getCat());
+
         return convertView;
     }
 

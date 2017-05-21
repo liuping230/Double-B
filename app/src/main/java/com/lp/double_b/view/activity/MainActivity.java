@@ -1,5 +1,6 @@
 package com.lp.double_b.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +17,11 @@ import com.lp.double_b.R;
 import com.lp.double_b.view.adapter.BookFragmentAdapter;
 import com.lp.double_b.view.fragment.BookCityFragment;
 import com.lp.double_b.view.fragment.BookRackFragment;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.util.ArrayList;
 
@@ -35,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
+        initImageLoader(getApplicationContext());
         initView();
         initListener();
         initData();
@@ -132,5 +138,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+
+    public static void initImageLoader(Context context) {
+        // This configuration tuning is custom. You can tune every option, you may tune some of them,
+        // or you can create default configuration by
+        //        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(context);
+        // method.
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)//
+                .threadPriority(Thread.NORM_PRIORITY - 2)//
+                .denyCacheImageMultipleSizesInMemory()//
+                .diskCacheFileNameGenerator(new Md5FileNameGenerator())//
+                .diskCacheSize(50 * 1024 * 1024) // 50 Mb
+                .memoryCache(new LruMemoryCache(4 * 1024 * 1024)).tasksProcessingOrder(QueueProcessingType.LIFO)//
+                .writeDebugLogs() // Remove for release app
+                .build();
+        // Initialize ImageLoader with configuration.
+        ImageLoader.getInstance().init(config);
     }
 }
