@@ -10,6 +10,19 @@ public class BookInfoBean {
    public String image;
    public String shortIntro;
    public String title;
+
+    public BookInfoBean() {
+    }
+
+    public BookInfoBean(String _id, String author, String cat, String image, String shortIntro, String title) {
+        this._id = _id;
+        this.author = author;
+        this.cat = cat;
+        this.image = image;
+        this.shortIntro = shortIntro;
+        this.title = title;
+    }
+
     @Override
     public String toString() {
         return "BookInfoBean{" +

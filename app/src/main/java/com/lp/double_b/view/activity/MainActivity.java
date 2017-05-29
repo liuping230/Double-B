@@ -1,11 +1,12 @@
 package com.lp.double_b.view.activity;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,11 +18,6 @@ import com.lp.double_b.R;
 import com.lp.double_b.view.adapter.BookFragmentAdapter;
 import com.lp.double_b.view.fragment.BookCityFragment;
 import com.lp.double_b.view.fragment.BookRackFragment;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.util.ArrayList;
 
@@ -35,13 +31,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Fragment> mFragments;
     private BookFragmentAdapter mFragmentAdapter;
     private ImageView mIvAddBook;
+    private ImageView mIvDeleteBook;
+    private BookRackFragment mBookRackFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        initImageLoader(getApplicationContext());
+        //initImageLoader(getApplicationContext());
         initView();
         initListener();
         initData();
@@ -51,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mFragments = new ArrayList<Fragment>();
         mFragments.add(new BookCityFragment());
-        mFragments.add(new BookRackFragment());
+        mBookRackFragment = new BookRackFragment();
+        mFragments.add(mBookRackFragment);
         mFragmentAdapter = new BookFragmentAdapter(getSupportFragmentManager(),mFragments);
         mVpContent.setAdapter(mFragmentAdapter);
     }
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTvBookCity.setOnClickListener(this);
         mTvBookRack.setOnClickListener(this);
         mIvAddBook.setOnClickListener(this);
-
+        mIvDeleteBook.setOnClickListener(this);
         mVpContent.setOnPageChangeListener(this);
     }
 
@@ -73,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTvBookCity = (TextView) findViewById(R.id.tv_book_city);
         mTvBookRack = (TextView)  findViewById(R.id.tv_book_rack);
         mIvAddBook = (ImageView)  findViewById(R.id.add_book);
+        mIvDeleteBook = (ImageView)  findViewById(R.id.delete_book);
     }
 
     @Override
@@ -81,13 +81,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.iv_mine: //点击“我的"
 
                 break;
+            case R.id.delete_book: //点击“删除"
+                //mBookRackFragment.deleteBooks();
+                showNormalDialog();
+                break;
             case R.id.add_book: //点击“添加书籍"
-                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                Intent intent=new Intent(MainActivity.this, com.lp.double_b.view.activity.SearchActivity.class);
                 startActivity(intent);
                 break;
             case R.id.tv_recommend://点击“推荐”
                 break;
             case R.id.tv_book_city:
+                if (mBookRackFragment.isDeleteMode()) {
+                    mBookRackFragment.exitMultiSelectState();
+                }
                 mVpContent.setCurrentItem(0);
                 setBookTitleColor(true);
                 break;
@@ -96,6 +103,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setBookTitleColor(false);
                 break;
         }
+    }
+
+    private void showNormalDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(this);
+        normalDialog.setIcon(R.drawable.cover);
+        normalDialog.setTitle("删除书籍");
+
+        int booksCount = mBookRackFragment.getDeleteBooksCount();
+        if (booksCount == 0) {
+            return;
+        } else {
+            normalDialog.setMessage("确定要删除所选" + booksCount + "本书籍");
+            normalDialog.setPositiveButton("确定",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mBookRackFragment.deleteBooks();
+                        }
+                    });
+            normalDialog.setNegativeButton("取消",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //showDeleteMode(false);
+                            mBookRackFragment.exitMultiSelectState();
+                        }
+                    });
+        }
+
+        // 显示
+        normalDialog.show();
+    }
+
+
+    public void showDeleteMode(boolean deleteMode) {
+        mIvAddBook.setVisibility(deleteMode ? View.INVISIBLE : View.VISIBLE);
+        mIvDeleteBook.setVisibility(deleteMode ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void setBookTitleColor(boolean isBookCitySelected) {
@@ -113,6 +163,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
         Log.d("onPageScrolled: ","position = " + position + "");
+        if (mBookRackFragment.isDeleteMode()) {
+            mBookRackFragment.exitMultiSelectState();
+        }
     }
 
     /**
@@ -131,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTvRecommend.setVisibility(0 == position ? View.VISIBLE : View.INVISIBLE);
         mIvMine.setVisibility(0 == position ? View.VISIBLE : View.INVISIBLE);
         mIvAddBook.setVisibility(0 == position ? View.INVISIBLE : View.VISIBLE);
+        mIvDeleteBook.setVisibility(View.INVISIBLE);
 
     }
 
@@ -140,21 +194,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
-    public static void initImageLoader(Context context) {
-        // This configuration tuning is custom. You can tune every option, you may tune some of them,
-        // or you can create default configuration by
-        //        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(context);
-        // method.
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)//
-                .threadPriority(Thread.NORM_PRIORITY - 2)//
-                .denyCacheImageMultipleSizesInMemory()//
-                .diskCacheFileNameGenerator(new Md5FileNameGenerator())//
-                .diskCacheSize(50 * 1024 * 1024) // 50 Mb
-                .memoryCache(new LruMemoryCache(4 * 1024 * 1024)).tasksProcessingOrder(QueueProcessingType.LIFO)//
-                .writeDebugLogs() // Remove for release app
-                .build();
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config);
+    @Override
+    public void onBackPressed() {
+        if (mBookRackFragment != null) {
+            if (mBookRackFragment.onBackPressed()) return;
+        }
+        super.onBackPressed();
     }
+
 }

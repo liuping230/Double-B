@@ -52,9 +52,11 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
                 _listData = (List<BookInfoBean>) msg.obj;
             }
 
+
             return false;
         }
     });
+
     public BookCityFragment() {
         // Required empty public constructor
     }
@@ -236,6 +238,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (_listData != null) {
+
             BookInfoBean bookInfoBean = _listData.get(position);
             BookDetailActivity.startActivity(getActivity(),bookInfoBean);
         }
@@ -250,6 +253,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
             if (null != bookInfoBeen)
             {Log.w(TAG,"bookInfoBeen.size() ============================================================== ");
                 Log.w(TAG,"bookInfoBeen.size() = " + bookInfoBeen.size());}
+
             Message message = Message.obtain();
             message.obj = bookInfoBeen;
             mHandler.sendMessage(message);

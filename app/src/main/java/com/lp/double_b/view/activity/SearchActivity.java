@@ -8,15 +8,21 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.lp.double_b.R;
+import com.lp.double_b.view.database.DataBaseDao;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/5/13.
@@ -34,9 +40,14 @@ public class SearchActivity extends FragmentActivity implements View.OnClickList
     public boolean searchTextEmpty;
     private boolean isFirstNotEmpty = true;
     private boolean toSearch = false;
+    DataBaseDao mDataBaseDao;
+    private List<HashMap<String, Object>> book;
     @Override
     protected void onCreate( Bundle ag0) {
         super.onCreate(ag0);
+        setTitle("搜索");
+       mDataBaseDao=DataBaseDao.getInstance(this);
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);// 获得软键盘的对象
         setContentView(R.layout.activity_search);
         findViews();
         initViews();
@@ -129,6 +140,41 @@ public class SearchActivity extends FragmentActivity implements View.OnClickList
     }
 
     private void showBooksSearched() {
+        mainFlipper.setDisplayedChild(0);
+        if (searchEditText.getText().toString().length() == 0) {
+            listView.setAdapter(null);
+            return;
+        }
+        //List<BookInfoBean> search =DataBaseDao.
+        BaseAdapter mBaseAdapter = new BaseAdapter() {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = View.inflate(SearchActivity.this, R.layout.book_item, null);
+                TextView title = (TextView) view.findViewById(R.id.name);
+                TextView author = (TextView) view.findViewById(R.id.author);
+                TextView keywords = (TextView) view.findViewById(R.id.keywords);
+                title.setText(book.get(position).get("name") + "");
+                author.setText(book.get(position).get("author") + "");
+                keywords.setText(book.get(position).get("keywords") + "");
+                return view;
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return null;
+            }
+
+            @Override
+            public int getCount() {
+                return book.size();
+            }
+        };
+        listView.setAdapter(mBaseAdapter);
     }
 
     public void setSearchTextEmpty(boolean searchTextEmpty) {
