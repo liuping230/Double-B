@@ -45,6 +45,7 @@ public class BookDetailActivity extends FragmentActivity implements View.OnClick
     private BookInfoBean mBook;
     private boolean mExist;
     private BookDetailObserver mObserver;
+    private String id;
 
     public static void startActivity(Context context, BookInfoBean book){
         Intent i = new Intent(context, BookDetailActivity.class);
@@ -72,6 +73,7 @@ public class BookDetailActivity extends FragmentActivity implements View.OnClick
     private void initView(){
         Intent intent = getIntent();
         String ID = intent.getStringExtra(BUNDLE_KEY_BOOK_ID);
+        id = ID;
         String title = intent.getStringExtra(BUNDLE_KEY_BOOK_TITLE);
         String author = intent.getStringExtra(BUNDLE_KEY_BOOK_AUTHOR);
         String image = intent.getStringExtra(BUNDLE_KEY_BOOK_IMAGE);
@@ -106,7 +108,7 @@ public class BookDetailActivity extends FragmentActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.strBtn://点击开始阅读
-                Intent intent=new Intent(BookDetailActivity.this, com.lp.double_b.view.activity.ReadingActivity.class);
+                Intent intent=ReadingActivity.newIntent(BookDetailActivity.this, id);
                 startActivity(intent);
                 break;
             case R.id.addBtn://点击加入书架

@@ -22,5 +22,6 @@
     <string name="book_read_alreday_download">已缓存过:%1$s(%2$d/%3$d)...</string>
     <string name="book_read_download_progress">正在缓存:%1$s(%2$d/%3$d)...</string>
     <string name="net_error">网络异常</string>
+    <string name="chapter_list">章节列表</string>
     <string name="book_read_add_book">添书</string>
 </resources>

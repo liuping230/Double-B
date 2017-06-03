@@ -209,4 +209,5 @@ public class SharedPreferencesUtil {
         editor.commit();
         return this;
     }
+
 }

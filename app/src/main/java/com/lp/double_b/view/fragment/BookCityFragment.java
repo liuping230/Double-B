@@ -170,7 +170,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         //http://localhost:8080/Double_B_Reader/home/female.json
         String url = "http://10.0.3.2:8080/Double_B_Reader/home/" + getInterfaceKey();
 
-        LogUtils.s(url);
+      LogUtils.s(url);
 
         Request request = new Request.Builder().get().url(url).build();
 
@@ -235,15 +235,6 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         return result;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (_listData != null) {
-
-            BookInfoBean bookInfoBean = _listData.get(position);
-            BookDetailActivity.startActivity(getActivity(),bookInfoBean);
-        }
-    }
-
     class LoadDataTask implements Runnable {
         @Override
         public void run() {
@@ -266,6 +257,14 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
             });
             //run方法走到最后,置空任务
             mLoadDataTask = null;
+        }
+    }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (_listData != null) {
+
+            BookInfoBean bookInfoBean = _listData.get(position);
+            BookDetailActivity.startActivity(getActivity(),bookInfoBean);
         }
     }
 

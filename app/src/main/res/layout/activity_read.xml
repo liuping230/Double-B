@@ -13,13 +13,27 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/rlBookReadRoot"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/theme_leather_bg"
                 android:orientation="vertical">
 
+    <com.lp.double_b.view.util.MyWebView
+        android:id="@+id/activity_read_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.lp.double_b.view.util.MyWebView>
 
-</RelativeLayout>
+    <include layout="@layout/read_controller"/>
+
+    <FrameLayout
+        android:id="@+id/activity_read_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+
+
+</FrameLayout>
