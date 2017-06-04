@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lp.double_b.R;
 import com.lp.double_b.view.adapter.BookFragmentAdapter;
@@ -24,16 +26,19 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
     private ImageView mIvMine;
-    private TextView mTvRecommend;
+    public TextView mTvRecommend;
     private TextView mTvBookCity;
     private TextView mTvBookRack;
     private ViewPager mVpContent;
+    private LinearLayout tv_recommend1;
     private ArrayList<Fragment> mFragments;
     private BookFragmentAdapter mFragmentAdapter;
     private ImageView mIvAddBook;
     private ImageView mIvDeleteBook;
     private BookRackFragment mBookRackFragment;
-
+    private String s;
+    //准备数据源
+    private String[] items={"男生","女生","综合推荐"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         initListener();
         initData();
+//        ShowHideRecommend();
     }
 
     private void initData() {
@@ -63,18 +69,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mIvAddBook.setOnClickListener(this);
         mIvDeleteBook.setOnClickListener(this);
         mVpContent.setOnPageChangeListener(this);
+        tv_recommend1.setOnClickListener(this);
     }
 
     private void initView() {
         mVpContent = (ViewPager) findViewById(R.id.vp_content);
         mIvMine = (ImageView) findViewById(R.id.iv_mine);
         mTvRecommend = (TextView) findViewById(R.id.tv_recommend);
+        s=mTvRecommend.toString();
         mTvBookCity = (TextView) findViewById(R.id.tv_book_city);
         mTvBookRack = (TextView)  findViewById(R.id.tv_book_rack);
         mIvAddBook = (ImageView)  findViewById(R.id.add_book);
         mIvDeleteBook = (ImageView)  findViewById(R.id.delete_book);
+        tv_recommend1=(LinearLayout)findViewById(R.id.tv_recommend1);
     }
 
+    //监听事件
+    class DialogsingleClickListener implements DialogInterface.OnClickListener{
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            // 判断 单选按钮
+            String i = items[which];
+            Toast.makeText(MainActivity.this,i,Toast.LENGTH_SHORT).show();
+            mTvRecommend.setText(i);
+            s=mTvRecommend.toString();
+            dialog.dismiss();
+
+        }
+    }
+    /**
+     * 单选按钮对话框
+     */
+    public void ShowSingleDialog(){
+
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle("推荐");
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setSingleChoiceItems(items,0,new DialogsingleClickListener());
+        AlertDialog dialog=builder.create();
+        s=mTvRecommend.toString();
+        dialog.show();
+    }
+    //宿主activity中的getTitles()方法
+    public String getTitles(){
+        return s;
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -90,6 +130,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.tv_recommend://点击“推荐”
+                ShowSingleDialog();
+                getTitles();
+//                new AlertDialog.Builder(this)
+//                        .setTitle("推荐")
+//                        .setIcon(android.R.drawable.ic_dialog_info)
+//                        .setSingleChoiceItems(new String[] {"男生","女生","综合推荐" },
+//                                0, new DialogInterface.OnClickListener() {
+//
+//                                    public void onClick(DialogInterface dialog,
+//                                                        int which) {
+//                                        dialog.dismiss();
+//                                    }
+//                                });
                 break;
             case R.id.tv_book_city:
                 if (mBookRackFragment.isDeleteMode()) {

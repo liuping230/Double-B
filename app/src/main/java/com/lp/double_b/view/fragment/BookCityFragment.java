@@ -1,5 +1,6 @@
 package com.lp.double_b.view.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +21,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.lp.double_b.R;
 import com.lp.double_b.view.activity.BookDetailActivity;
+import com.lp.double_b.view.activity.MainActivity;
 import com.lp.double_b.view.activity.SearchActivity;
 import com.lp.double_b.view.adapter.BookListAdapter;
 import com.lp.double_b.view.data.BookInfoBean;
@@ -39,6 +41,7 @@ import java.util.List;
 public class BookCityFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private static final String TAG ="BookCityFragment";
+    private static final String EXTRA_TITLE_ID ="titles" ;
     private LinearLayout searchLayout;
     BookListAdapter mAdapter;
     private ListView listView;
@@ -56,6 +59,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
             return false;
         }
     });
+    private String titles;
 
     public BookCityFragment() {
         // Required empty public constructor
@@ -64,7 +68,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_book_city, container, false);
+    View view = inflater.inflate(R.layout.fragment_book_city, container, false);
         searchLayout = (LinearLayout) view.findViewById(R.id.search_layout);
         searchLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,14 +88,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
 
         return view;
     }
-
-//    private void getData() {
-//        _listData=new ArrayList<OneBook>();
-//        OneBook b=new OneBook(R.drawable.cover,"婚然天成", "绿丸子", "总裁");
-//       _listData.add(b);
-//        mAdapter = new BookListAdapter(getActivity(), _listData);
-//        listView.setAdapter(mAdapter);
-//    }
+    
     /**
      * 加载数据
      * 1.磁盘,磁盘有返回,存内存
@@ -170,7 +167,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         //http://localhost:8080/Double_B_Reader/home/female.json
         String url = "http://10.0.3.2:8080/Double_B_Reader/home/" + getInterfaceKey();
 
-      LogUtils.s(url);
+        LogUtils.s(url);
 
         Request request = new Request.Builder().get().url(url).build();
 
@@ -209,10 +206,32 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         return null;
     }
 
+//   / Fragment中的onAttach方法
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+         titles = ((MainActivity) activity).getTitles();
+    }
+    //通过强转成宿主activity，就可以获取到传递过来的数据
     public String getInterfaceKey() {
         Bundle arguments = getArguments();
-        //arguments.getString()
-        return "female";
+//        arguments.putString("Titles",titles);
+//        String t;
+//        switch (titles) {
+//            case "男生":
+//                 t = "male";
+//                break;
+//            case "女生":
+//                t = "female";
+//                break;
+//            default:
+//                t = "recommend";
+//                break;
+//
+//        }
+//            return t;
+
+       return "recommend";
     }
 
     public List<BookInfoBean> parseJsonString(String resultJsonString) {
