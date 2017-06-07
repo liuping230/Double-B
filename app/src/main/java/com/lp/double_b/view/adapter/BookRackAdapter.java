@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lp.double_b.R;
+import com.lp.double_b.view.activity.BookDetailActivity;
 import com.lp.double_b.view.data.BookInfoBean;
 import com.lp.double_b.view.fragment.BookRackFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -48,12 +49,19 @@ public class BookRackAdapter extends BaseAdapter  {
         notifyDataSetChanged();
     }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder;
         if (convertView==null){
             holder =new Holder();
             convertView=LayoutInflater.from(mContext).inflate(R.layout.add_book_item,null);
             holder.cover= (ImageView) convertView.findViewById(R.id.cover);
+            holder.cover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BookDetailActivity.startActivity(mContext,mBookInfoBeanList.get(position));
+
+                }
+            });
             holder.checkBox= (ImageView) convertView.findViewById(R.id.iv_check_box);
             holder.name=(TextView)convertView.findViewById(R.id.name);
             holder.author=(TextView)convertView.findViewById(R.id.author);

@@ -36,9 +36,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mIvAddBook;
     private ImageView mIvDeleteBook;
     private BookRackFragment mBookRackFragment;
-    private String s;
+    private String argument;
     //准备数据源
     private String[] items={"男生","女生","综合推荐"};
+    private BookCityFragment mBookCityFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,17 +50,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         initListener();
         initData();
+        //onResume();
 //        ShowHideRecommend();
     }
 
     private void initData() {
 
         mFragments = new ArrayList<Fragment>();
-        mFragments.add(new BookCityFragment());
+        mBookCityFragment = new BookCityFragment();
+        mFragments.add(mBookCityFragment);
         mBookRackFragment = new BookRackFragment();
         mFragments.add(mBookRackFragment);
         mFragmentAdapter = new BookFragmentAdapter(getSupportFragmentManager(),mFragments);
         mVpContent.setAdapter(mFragmentAdapter);
+        //onResume();
     }
 
     private void initListener() {
@@ -70,18 +75,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mIvDeleteBook.setOnClickListener(this);
         mVpContent.setOnPageChangeListener(this);
         tv_recommend1.setOnClickListener(this);
+        //onResume();
     }
 
     private void initView() {
         mVpContent = (ViewPager) findViewById(R.id.vp_content);
         mIvMine = (ImageView) findViewById(R.id.iv_mine);
         mTvRecommend = (TextView) findViewById(R.id.tv_recommend);
-        s=mTvRecommend.toString();
+        argument=mTvRecommend.getText().toString();
         mTvBookCity = (TextView) findViewById(R.id.tv_book_city);
         mTvBookRack = (TextView)  findViewById(R.id.tv_book_rack);
         mIvAddBook = (ImageView)  findViewById(R.id.add_book);
         mIvDeleteBook = (ImageView)  findViewById(R.id.delete_book);
         tv_recommend1=(LinearLayout)findViewById(R.id.tv_recommend1);
+        //onResume();
     }
 
     //监听事件
@@ -93,7 +100,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String i = items[which];
             Toast.makeText(MainActivity.this,i,Toast.LENGTH_SHORT).show();
             mTvRecommend.setText(i);
-            s=mTvRecommend.toString();
+            argument = i;
+            mBookCityFragment.reloadData();
             dialog.dismiss();
 
         }
@@ -108,12 +116,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setIcon(android.R.drawable.ic_dialog_info);
         builder.setSingleChoiceItems(items,0,new DialogsingleClickListener());
         AlertDialog dialog=builder.create();
-        s=mTvRecommend.toString();
+        argument=mTvRecommend.getText().toString();
+        Log.e("ARGUMENT" ,argument);
         dialog.show();
+        //onResume();
     }
     //宿主activity中的getTitles()方法
     public String getTitles(){
-        return s;
+        return argument;
+
     }
     @Override
     public void onClick(View v) {
@@ -132,17 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.tv_recommend://点击“推荐”
                 ShowSingleDialog();
                 getTitles();
-//                new AlertDialog.Builder(this)
-//                        .setTitle("推荐")
-//                        .setIcon(android.R.drawable.ic_dialog_info)
-//                        .setSingleChoiceItems(new String[] {"男生","女生","综合推荐" },
-//                                0, new DialogInterface.OnClickListener() {
-//
-//                                    public void onClick(DialogInterface dialog,
-//                                                        int which) {
-//                                        dialog.dismiss();
-//                                    }
-//                                });
+                //onResume();
                 break;
             case R.id.tv_book_city:
                 if (mBookRackFragment.isDeleteMode()) {
@@ -255,4 +256,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onBackPressed();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getTitles();
+    }
 }

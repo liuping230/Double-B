@@ -110,6 +110,7 @@ public class BookRackFragment extends Fragment implements AdapterView.OnItemClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         BookInfoBean bookInfoBean = mBooks.get(position);
+//        BookDetailActivity.startActivity(getActivity(),bookInfoBean);
         if (mAdapter.isCheckBoxShow()) {
             //checkbox显示 为删除模式，点击该是就选中为要删除
             toggleSelect(bookInfoBean);

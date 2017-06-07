@@ -27,6 +27,7 @@ import com.lp.double_b.view.adapter.BookListAdapter;
 import com.lp.double_b.view.data.BookInfoBean;
 import com.lp.double_b.view.util.FileUtils;
 import com.lp.double_b.view.util.LogUtils;
+import com.lp.double_b.view.util.ThreadPoolProxyFactory;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -39,9 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookCityFragment extends Fragment implements AdapterView.OnItemClickListener {
-
+    public static final String ARGUMENT = "argument";
     private static final String TAG ="BookCityFragment";
-    private static final String EXTRA_TITLE_ID ="titles" ;
     private LinearLayout searchLayout;
     BookListAdapter mAdapter;
     private ListView listView;
@@ -60,6 +60,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         }
     });
     private String titles;
+    private Activity mActivity;
 
     public BookCityFragment() {
         // Required empty public constructor
@@ -81,11 +82,12 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         listView.setOnItemClickListener(this);
 //        getData();
 
+        mAdapter = new BookListAdapter(getActivity(), null);
+        listView.setAdapter(mAdapter);
         //异步加载
         mLoadDataTask = new LoadDataTask();
-        new Thread(mLoadDataTask).start();
-       // ThreadPoolProxyFactory.createNormalThreadPoolProxy().submit(mLoadDataTask);
-
+        //new Thread(mLoadDataTask).start();
+        ThreadPoolProxyFactory.createNormalThreadPoolProxy().submit(mLoadDataTask);
         return view;
     }
     
@@ -143,6 +145,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         } finally {
             IOUtils.close(reader);
         }
+
         return null;
     }
 
@@ -153,7 +156,48 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         return new File(dir, fileName);
     }
 
+    @Override
+    public void onResume() {
+        Log.e("onResume","onResume == enter...");
+        //titles = ((MainActivity) mActivity).getTitles();
+        Log.e("onResume","titles=="+ titles );
+        //new Thread(mLoadDataTask).start();
+        super.onResume();
+    }
 
+    //   / Fragment中的onAttach方法
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+        titles = ((MainActivity) mActivity).getTitles();
+        Log.e("onAttach","titles=="+ titles );
+        //onResume();
+    }
+    //通过强转成宿主activity，就可以获取到传递过来的数据
+    public String getInterfaceKey() {
+//        Bundle arguments = getArguments();
+////        Log.e("argument","argument==null ?"+(arguments==null));
+//        String title= arguments.getString(titles);
+//        Log.e("titles","titles=  ?"+ title );
+//        Log.e("argument","argument==null ?"+  (arguments == null) );
+        String t;
+        switch (titles ) {
+            case "男生":
+                return "male";
+//                break;
+            case "女生":
+                return "female";
+//                break;
+            default:
+                return "recommend";
+//                break;
+        }
+//        return t;
+//        Log.e("t","t=  ?"+ t);
+
+       //return "recommend";
+    }
     /**
      * 从网络获取数据
      *
@@ -167,6 +211,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         //http://localhost:8080/Double_B_Reader/home/female.json
         String url = "http://10.0.3.2:8080/Double_B_Reader/home/" + getInterfaceKey();
 
+        Log.e("loadDataFromNet","getInterfaceKey == " + getInterfaceKey());
         LogUtils.s(url);
 
         Request request = new Request.Builder().get().url(url).build();
@@ -181,21 +226,6 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
 
                 Log.w(TAG,"responseJsonString = " + responseJsonString);
 
-               /* BufferedWriter writer = null;
-                try {
-                    //保存数据到本地
-                    File cacheFile = getCacheFile();
-
-                    writer = new BufferedWriter(new FileWriter(cacheFile));
-                    writer.write(System.currentTimeMillis() + "");
-                    writer.newLine();//换行
-                    writer.write(responseJsonString);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    IOUtils.close(writer);
-                }*/
-
                 //完成json的解析
                 List<BookInfoBean> t = parseJsonString(responseJsonString);
                 return t;
@@ -203,43 +233,14 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //onResume();
         return null;
     }
 
-//   / Fragment中的onAttach方法
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-         titles = ((MainActivity) activity).getTitles();
-    }
-    //通过强转成宿主activity，就可以获取到传递过来的数据
-    public String getInterfaceKey() {
-        Bundle arguments = getArguments();
-//        arguments.putString("Titles",titles);
-//        String t;
-//        switch (titles) {
-//            case "男生":
-//                 t = "male";
-//                break;
-//            case "女生":
-//                t = "female";
-//                break;
-//            default:
-//                t = "recommend";
-//                break;
-//
-//        }
-//            return t;
-
-       return "recommend";
-    }
 
     public List<BookInfoBean> parseJsonString(String resultJsonString) {
         List<BookInfoBean> result = new ArrayList<>();
         Gson gson = new Gson();
-        //Type type = ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-       // result = gson.fromJson(resultJsonString, type);
-        //result = GsonUtil.parseJsonArrayWithGson(resultJsonString, BookInfoBean.class);
 
         //Json的解析类对象
         JsonParser parser = new JsonParser();
@@ -251,6 +252,7 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
             Log.w(TAG,"BookInfoBean == " +bookInfoBean.toString());
             result.add(bookInfoBean);
         }
+        //onResume();
         return result;
     }
 
@@ -258,24 +260,26 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
         @Override
         public void run() {
             //真正在子线程中开始加载具体的数据了
-            final List<BookInfoBean> bookInfoBeen = loadDataFromNet();
+            final List<BookInfoBean> mBookInfoBeen = loadDataFromNet();
             Log.w(TAG,"bookInfoBeen.size() ++++++++++++++++++++++++++++++++++++ ");
-            if (null != bookInfoBeen)
+            if (null != mBookInfoBeen)
             {Log.w(TAG,"bookInfoBeen.size() ============================================================== ");
-                Log.w(TAG,"bookInfoBeen.size() = " + bookInfoBeen.size());}
+                Log.w(TAG,"bookInfoBeen.size() = " + mBookInfoBeen.size());}
 
             Message message = Message.obtain();
-            message.obj = bookInfoBeen;
+            message.obj = mBookInfoBeen;
             mHandler.sendMessage(message);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter = new BookListAdapter(getActivity(), bookInfoBeen);
-                    listView.setAdapter(mAdapter);
+                    //mAdapter = new BookListAdapter(getActivity(), mBookInfoBeen);
+                    //listView.setAdapter(mAdapter);
+                    mAdapter.updateData(mBookInfoBeen);
                 }
             });
             //run方法走到最后,置空任务
             mLoadDataTask = null;
+            //onResume();
         }
     }
     @Override
@@ -285,6 +289,17 @@ public class BookCityFragment extends Fragment implements AdapterView.OnItemClic
             BookInfoBean bookInfoBean = _listData.get(position);
             BookDetailActivity.startActivity(getActivity(),bookInfoBean);
         }
+        //onResume();
+    }
+
+    public void reloadData() {
+        //ThreadPoolProxyFactory.createNormalThreadPoolProxy().submit(mLoadDataTask);
+        Log.e("reloadData", "reloadData()  = " );
+        titles = ((MainActivity) mActivity).getTitles();
+        Log.e("reloadData","titles=="+ titles );
+        _listData.clear();
+        LoadDataTask task = new LoadDataTask();
+        new Thread(task).start();
     }
 
 }

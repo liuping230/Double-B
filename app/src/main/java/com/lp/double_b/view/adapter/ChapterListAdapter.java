@@ -24,7 +24,6 @@ public class ChapterListAdapter extends RecyclerView.Adapter<ChapterListAdapter.
         mContext = context;
     }
 
-
     class Holder extends RecyclerView.ViewHolder{
         public TextView name;
 

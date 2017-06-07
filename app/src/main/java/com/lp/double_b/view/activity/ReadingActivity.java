@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,7 +19,7 @@ import com.lp.double_b.view.util.MyWebView;
 /**
  * Created by Administrator on 2017/5/24.
  */
-public class ReadingActivity extends AppCompatActivity implements View.OnClickListener {
+public class ReadingActivity extends FragmentActivity implements View.OnClickListener {
     private static final String TAG = "ReadingActivity";
     private static final String EXTRA_BOOK_ID = "extra_book_id";
 
@@ -33,7 +33,7 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
 
     private int index;
     private String id;
-    public static Intent newIntent(Context context,String id){
+    public static Intent newIntent(Context context, String id){
         Intent intent = new Intent(context, ReadingActivity.class);
         intent.putExtra(EXTRA_BOOK_ID, id);
         return intent;

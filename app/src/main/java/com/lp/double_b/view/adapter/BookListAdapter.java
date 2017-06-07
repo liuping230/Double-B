@@ -56,6 +56,11 @@ public class BookListAdapter extends BaseAdapter{
         return convertView;
     }
 
+    public void updateData(List<BookInfoBean> bookInfoBeen) {
+        _listData = bookInfoBeen;
+        notifyDataSetChanged();
+    }
+
     public class Holder {
         public TextView name;
         public TextView author;
