@@ -79,7 +79,7 @@ public class ReadingActivity extends FragmentActivity implements View.OnClickLis
 
 
     private void updateCh(){
-        mWebView.loadUrl("http://10.0.2.2:8080/Double_B_Reader/home/novel/"+id+".html#ch"+index);
+        mWebView.loadUrl("http://10.0.3.2:8080/Double_B_Reader/home/novel/"+id+".html#ch"+index);
     }
 
     private void showhideController(){
